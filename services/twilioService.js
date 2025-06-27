@@ -1,4 +1,3 @@
-// services/twilioService.js
 const twilio = require('twilio');
 require('dotenv').config();
 
@@ -18,4 +17,4 @@ const sendSMS = async (to, body) => {
   }
 };
 
-module.exports = { sendSMS };
+module.exports = { sendSMS };
