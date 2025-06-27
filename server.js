@@ -13,18 +13,23 @@ app.use(bodyParser.json());
 
 //route
 app.post('/api/send-sms', async (req, res) => {
-  const { to, message } = req.body;
+  const { to, message, title } = req.body;
 
-  if (!to || !message) {
-    return res.status(400).json({ error: 'Missing "to" or "message" field' });
+  if (!Array.isArray(to) || !message || !title) {
+    return res.status(400).json({ error: '"to", "message", and "title" fields are required' });
+  }
+ const results = [];
+
+  for (const number of to) {
+    try {
+      const response = await sendSMS(number, `${title}: ${message}`);
+      results.push({ to: number, status: 'success', sid: response.sid });
+    } catch (error) {
+      results.push({ to: number, status: 'failed', error: error.message });
+    }
   }
 
-  try {
-    const response = await sendSMS(to, message);
-    res.status(200).json({ success: true, sid: response.sid });
-  } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
-  }
+  res.status(207).json({ success: true, results }); // 207 = Multi-Status
 });
 
 //server
