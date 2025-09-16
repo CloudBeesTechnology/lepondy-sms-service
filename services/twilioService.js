@@ -9,7 +9,7 @@ const sendSMS = async (to, body) => {
       body,
       from: process.env.TWILIO_PHONE_NUMBER,
       to,
-    });
+    }); 
     return message;
   } catch (error) {
     console.error('Twilio Error:', error.message);
